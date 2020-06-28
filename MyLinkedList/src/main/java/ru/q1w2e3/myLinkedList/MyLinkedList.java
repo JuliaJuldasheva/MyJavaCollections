@@ -20,6 +20,14 @@ public class MyLinkedList<T> {
 
     private int size = 0;
 
+    public void setLast(Node<T> last) {
+        this.last = last;
+    }
+
+    public void setFirst(Node<T> first) {
+        this.first = first;
+    }
+
     /**
      * Количесвто элементов списка
      *
@@ -66,7 +74,7 @@ public class MyLinkedList<T> {
      * @return true, если список пустой; false - если список непустой
      */
     public boolean isEmpty() {
-        return first == null;
+        return this.getSize() == 0;
     }
 
     /**
@@ -75,7 +83,8 @@ public class MyLinkedList<T> {
      * @return значение первого элемента списка
      */
     public T getFirst() {
-        isEmpty();
+        checkListSize();
+        checkFirstLinkIsNull();
         return first.value;
     }
 
@@ -85,7 +94,8 @@ public class MyLinkedList<T> {
      * @return значение последнего элемента списка
      */
     public T getLast() {
-        isEmpty();
+        checkListSize();
+        checkLastLinkIsNull();
         return last.value;
     }
 
@@ -97,11 +107,13 @@ public class MyLinkedList<T> {
      */
     public T getElementByIndex(int index) {
         checkListSize();
+        checkFirstLinkIsNull();
         checkElementIndex(index);
+
         if (index == 0) {
             getFirst();
         }
-        if (index == size) {
+        if (index == size - 1) {
             getLast();
         }
         Node<T> current = first.next;
@@ -121,10 +133,8 @@ public class MyLinkedList<T> {
 
         MyLinkedList<T> cloneLinkedList = new MyLinkedList<T>();
 
-        Node<T> current = first;
-        for (int i = 0; i < size; i++) {
-            cloneLinkedList.insert(i, current.value);
-            current = current.next;
+        for(Node<T> current = first; current != null; current = current.next) {
+            cloneLinkedList.insertLast(current.value);
         }
         return cloneLinkedList;
     }
@@ -157,6 +167,7 @@ public class MyLinkedList<T> {
         if (isEmpty()) {
             first = newLastNode;
         } else {
+            checkLastLinkIsNull();
             newLastNode.previous = last;
             last.next = newLastNode;
         }
@@ -173,23 +184,25 @@ public class MyLinkedList<T> {
     public void insert(int index, T value) {
         checkElementIndex(index);
         checkElementValue(value);
-        if (index == 0) {
+        if (index == 0 || isEmpty()) {
             insertFirst(value);
             return;
         }
-        if (index == size) {
+        if (index == size - 1) {
             insertLast(value);
             return;
         }
-        Node current = first;
+        checkFirstLinkIsNull();
+        Node<T> current = first;
         int i = 0;
         while (i != index - 1) {
             current = current.next;
             i++;
         }
-        Node newNode = new Node(value, current.next, current);
+        Node<T> newNode = new Node<T>(value, current.next, current);
         current.next = newNode;
         newNode.next.previous = newNode;
+        size++;
     }
 
     /**
@@ -199,11 +212,14 @@ public class MyLinkedList<T> {
      */
     public T removeFirst() {
         checkListSize();
+        checkFirstLinkIsNull();
         Node<T> oldFirst = first;
         first = first.next;
         if (isEmpty()) {
             last = null;
-        } else first.previous = null;
+        } else {
+            first.previous = null;
+        }
         size--;
         return oldFirst.value;
     }
@@ -215,11 +231,13 @@ public class MyLinkedList<T> {
      */
     public T removeLast() {
         checkListSize();
+        checkLastLinkIsNull();
         Node<T> oldLast = last;
-
         if (last.previous != null) {
             last.previous.next = null;
-        } else first = null;
+        } else {
+            first = null;
+        }
         last = last.previous;
         size--;
         return oldLast.value;
@@ -234,6 +252,8 @@ public class MyLinkedList<T> {
      */
     public boolean remove(T value) {
         checkListSize();
+        checkFirstLinkIsNull();
+        checkLastLinkIsNull();
         if (first.value.equals(value)) {
             removeFirst();
             return true;
@@ -253,6 +273,7 @@ public class MyLinkedList<T> {
         current.previous.next = current.next;
         current.next = null;
         current.previous = null;
+        size--;
         return true;
     }
 
@@ -270,11 +291,18 @@ public class MyLinkedList<T> {
             removeFirst();
             return true;
         }
-        if (index == size) {
+        if (index == size - 1) {
             removeLast();
             return true;
         }
-        return remove(getElementByIndex(index));
+        checkFirstLinkIsNull();
+        Node<T> current = first;
+        int i = 0;
+        while (i != index) {
+            current = current.next;
+            i++;
+        }
+        return remove(current.value);
     }
 
     /**
@@ -282,6 +310,7 @@ public class MyLinkedList<T> {
      */
     public void clear() {
         checkListSize();
+        checkFirstLinkIsNull();
         Node<T> current = first;
 
         while (current != null) {
@@ -298,6 +327,10 @@ public class MyLinkedList<T> {
 
     @Override
     public String toString() {
+        if(isEmpty()){
+            StringBuilder sb = new StringBuilder("[]");
+            return sb.toString();
+        }
         Node current = first;
         StringBuilder sb = new StringBuilder("[");
 
@@ -337,6 +370,7 @@ public class MyLinkedList<T> {
      * элемент не может быть null
      *
      * @param value значение проверяемого элемента
+     * @throws IllegalArgumentException если значение проверяемого элемента null
      */
     private void checkElementValue(T value) {
         if (value == null) {
@@ -344,13 +378,25 @@ public class MyLinkedList<T> {
         }
     }
 
-    //пока не используется
-    private void isLinkNull() {
-        if (first == null) {
-            throw (new IllegalArgumentException("Значение first не может быть null"));
+    /**
+     * Проверяет, что ссылка на последний элемент не пустая
+     * Предполагаем при этом, что список не пустой
+     * @throws NullPointerException если ссыка на последний элемент null
+     */
+    private void checkLastLinkIsNull() {
+        if (last == null) {
+            throw (new NullPointerException("Ссылка last не должна быть null"));
         }
-        if (last == null || first == null) {
-            throw (new IllegalArgumentException("Значение last не может быть null"));
+    }
+
+    /**
+     * Проверяет, что ссылка на первый элемент не пустая
+     * Предполагаем при этом, что список не пустой
+     * @throws NullPointerException если ссылка на первый элемент null
+     */
+    private void checkFirstLinkIsNull() {
+        if (first == null) {
+            throw (new NullPointerException("Ссылка first не должна быть null"));
         }
     }
 
@@ -358,9 +404,9 @@ public class MyLinkedList<T> {
      * Класс элемент списка
      *
      * @param <T> тип элемента списка
-     *            value - значение элемента списка
-     *            next - ссылка на следующий элемент списка
-     *            previous - ссылка на предыдущий элемент списка
+     * value - значение элемента списка
+     * next - ссылка на следующий элемент списка
+     * previous - ссылка на предыдущий элемент списка
      */
     private class Node<T> {
         private T value;
@@ -377,7 +423,7 @@ public class MyLinkedList<T> {
             this(value, next, null);
         }
 
-        public Node(Node previous, T value) {
+        public Node(Node<T> previous, T value) {
             this(value, null, null);
         }
     }

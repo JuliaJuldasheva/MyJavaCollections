@@ -3,48 +3,57 @@ package ru.q1w2e3.myLinkedList;
 public class MainApp {
     public static void main(String[] args) {
         MyLinkedList<String> myLinkedList = new MyLinkedList<String>();
-        myLinkedList.insertFirst("First");
+        System.out.println(myLinkedList.isEmpty()); //true
+        System.out.println(myLinkedList.getSize());
+//        myLinkedList.clear();
+//        System.out.println(myLinkedList.getLast());
+//        System.out.println(myLinkedList.getFirst());
+
+        myLinkedList.insert(0,"Third");
+        myLinkedList.insertLast("Fourth");
         myLinkedList.insertFirst("Second");
-        myLinkedList.insertFirst("Third");
-        //myLinkedList.insertFirst(null);
+        myLinkedList.insertFirst("First");
 
-        MyLinkedList<Integer> mll = new MyLinkedList<Integer>();
-        mll.insert(0,1);
-        mll.insert(1,2);
-        System.out.println(mll.toString());
+        System.out.println(myLinkedList.isEmpty()); //false
+        System.out.println(myLinkedList.getSize()); //4
+        System.out.println(myLinkedList); // [First, Second, Third, Fourth]
 
-       // mll.insert(2,null);
-
+        System.out.println(myLinkedList.indexOf("Second")); //1
+        //myLinkedList.setLast(null);
+        myLinkedList.insertLast("newFourth"); //[First, Second, Third, Fourth, newFourth]
         System.out.println(myLinkedList);
         System.out.println(myLinkedList.getSize());
 
-        System.out.println(myLinkedList.indexOf("Second"));
-        System.out.println(myLinkedList.indexOf("Four"));
+        myLinkedList.insert(1,"newSecond");
+        System.out.println(myLinkedList); //[First, newSecond, Second, Third, Fourth, newFourth]
+        System.out.println(myLinkedList.getSize());
 
-        System.out.println(myLinkedList.contains("First"));
-        System.out.println(myLinkedList.contains("Four"));
+        System.out.println(myLinkedList.contains("newSecond")); //true
+        System.out.println(myLinkedList.contains("Zero"));//false
+        System.out.println(myLinkedList.getElementByIndex(4));//Fourth
 
-        System.out.println(myLinkedList.isEmpty());
+        //myLinkedList.setLast(null);
+        myLinkedList.removeLast();
+        System.out.println(myLinkedList);//[First, newSecond, Second, Third, Fourth]
+        System.out.println(myLinkedList.getSize());//5
+        myLinkedList.removeFirst();
+        System.out.println(myLinkedList);//[newSecond, Second, Third, Fourth]
+        System.out.println(myLinkedList.getSize());//4
+        myLinkedList.remove(1);
+        System.out.println(myLinkedList);//[newSecond, Third, Fourth]
+        System.out.println(myLinkedList.getSize());//3
+        myLinkedList.remove("Third");
+        System.out.println(myLinkedList);//[newSecond, Fourth]
+        System.out.println(myLinkedList.getSize());//2
+        myLinkedList.removeFirst();
+        System.out.println(myLinkedList);//[Fourth]
+        System.out.println(myLinkedList.getSize());//1
 
-        System.out.println(myLinkedList.getFirst());
-        System.out.println(myLinkedList.getLast());
+        System.out.println(myLinkedList.clone());
+        myLinkedList.clear();
+        System.out.println(myLinkedList.getSize());
+        System.out.println(myLinkedList.toString());
 
-        System.out.println(myLinkedList.getElementByIndex(1));
-
-        System.out.println("1 " + myLinkedList.clone());
-
-//        myLinkedList.setLast(null);
-       // myLinkedList.setFirst(null);
-        myLinkedList.insertFirst("3");
-        myLinkedList.insertLast("5");
-        myLinkedList.insert(0,"null");
-        System.out.println(myLinkedList);
-
-//        System.out.println(myLinkedList.getElementByIndex(1));
-        System.out.println(myLinkedList.getElementByIndex(3));
-
-        myLinkedList.insert(1,"10");
-        System.out.println(myLinkedList);
     }
 }
 
