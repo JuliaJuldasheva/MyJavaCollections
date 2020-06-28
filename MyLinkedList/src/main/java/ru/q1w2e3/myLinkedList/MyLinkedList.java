@@ -2,19 +2,40 @@ package ru.q1w2e3.myLinkedList;
 
 import java.util.NoSuchElementException;
 
+/**
+ * Класс для работы с двунаправленным связанным списком
+ *
+ * @param <T> тип элемента списка
+ * @author Yuldasheva Yuliya
+ */
 public class MyLinkedList<T> {
 
-    private Node first; //ссылка на первый элемент
-    private Node last; //ссылка на последний элемент
+    /**
+     * first - ссылка на первый элемент
+     * last - ссылка на последний элемент
+     * size - количество элементов в списке
+     */
+    private Node<T> first;
+    private Node<T> last;
 
-    private int size = 0; //количество элементов списка
+    private int size = 0;
 
-    //Получение количества элементов
+    /**
+     * Количесвто элементов списка
+     *
+     * @return количесвто элементов списка
+     */
     public int getSize() {
         return size;
     }
 
-    //Получение индекса элемента
+    /**
+     * Поиск индекса элемента по значению
+     *
+     * @param value значение элемента
+     * @return индекс элемента, если элемент найден;
+     * -1 если элемент не найден
+     */
     public int indexOf(T value) {
         Node<T> current = first;
         int index = 0;
@@ -29,37 +50,51 @@ public class MyLinkedList<T> {
         return -1;
     }
 
-    //Проверка на наличие элемента в коллекции
+    /**
+     * Проверка наличия элемента в списке по значению
+     *
+     * @param value значение элемента
+     * @return true, если элемент есть; false, если элемента нет
+     */
     public boolean contains(T value) {
         return indexOf(value) > -1;
     }
 
-    //Проверка на пустоту
+    /**
+     * Проверка списка на пустоту
+     *
+     * @return true, если список пустой; false - если список непустой
+     */
     public boolean isEmpty() {
         return first == null;
     }
 
-    public void checkListSize() {
-        if (isEmpty()) {
-            throw new NoSuchElementException("Список пуст");
-        }
-    }
-
-    public void checkElementIndex(int index) {
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("Некорректный индекс");
-        }
-    }
-
+    /**
+     * Получение значения первого элемента списка
+     *
+     * @return значение первого элемента списка
+     */
     public T getFirst() {
-        return (T) first.value;
+        isEmpty();
+        return first.value;
     }
 
+    /**
+     * Получение значения последнего элемента списка
+     *
+     * @return значение последнего элемента списка
+     */
     public T getLast() {
-        return (T) last.value;
+        isEmpty();
+        return last.value;
     }
 
-    //Получение элемента по индексу
+    /**
+     * Получение значения элемента списка по индексу
+     *
+     * @param index
+     * @return значение элемента списка
+     */
     public T getElementByIndex(int index) {
         checkListSize();
         checkElementIndex(index);
@@ -69,28 +104,38 @@ public class MyLinkedList<T> {
         if (index == size) {
             getLast();
         }
-        Node<T> current = first;
-        while (indexOf(current.value) != index) {
+        Node<T> current = first.next;
+        for (int i = 1; i < index; i++) {
             current = current.next;
         }
         return current.value;
     }
 
+    /**
+     * Создание полной копии списка
+     *
+     * @return новый список, идентичный заданному
+     */
     public MyLinkedList<T> clone() {
         checkListSize();
 
         MyLinkedList<T> cloneLinkedList = new MyLinkedList<T>();
 
         Node<T> current = first;
-        while (current != null) {
-            cloneLinkedList.insert(indexOf(current.value), current.value);
+        for (int i = 0; i < size; i++) {
+            cloneLinkedList.insert(i, current.value);
             current = current.next;
         }
         return cloneLinkedList;
     }
 
-    //Вставка элемента в начало списка
+    /**
+     * Вставка элемента в начало списка
+     *
+     * @param value значение нового элемента списка
+     */
     public void insertFirst(T value) {
+        checkElementValue(value);
         Node<T> newFirstNode = new Node<T>(value, first);
         if (isEmpty()) {
             last = newFirstNode;
@@ -101,9 +146,14 @@ public class MyLinkedList<T> {
         size++;
     }
 
-    //Вставка элемента в конец списка
+    /**
+     * Вставка элемента в конец списка
+     *
+     * @param value значение нового элемента списка
+     */
     public void insertLast(T value) {
-        Node<T> newLastNode = new Node<T>(value);
+        checkElementValue(value);
+        Node<T> newLastNode = new Node<T>(last, value);
         if (isEmpty()) {
             first = newLastNode;
         } else {
@@ -114,9 +164,15 @@ public class MyLinkedList<T> {
         size++;
     }
 
-    //Вставка элемента в произвольное место списка
+    /**
+     * Вставка элемента в произвольное место списка
+     *
+     * @param index позиции, куда будет вставлен элемент
+     * @param value значение нового элемента списка
+     */
     public void insert(int index, T value) {
         checkElementIndex(index);
+        checkElementValue(value);
         if (index == 0) {
             insertFirst(value);
             return;
@@ -125,21 +181,22 @@ public class MyLinkedList<T> {
             insertLast(value);
             return;
         }
-
         Node current = first;
         int i = 0;
-        while (i < index - 1) {
+        while (i != index - 1) {
             current = current.next;
             i++;
         }
-        Node newNode = new Node(value);
-        newNode.next = current.next;
-        newNode.previous = current;
+        Node newNode = new Node(value, current.next, current);
         current.next = newNode;
         newNode.next.previous = newNode;
     }
 
-    //Удаление первого элемента
+    /**
+     * Удаление первого элемента
+     *
+     * @return значение удаленного элемента
+     */
     public T removeFirst() {
         checkListSize();
         Node<T> oldFirst = first;
@@ -151,7 +208,11 @@ public class MyLinkedList<T> {
         return oldFirst.value;
     }
 
-    //Удаление последнего элемента
+    /**
+     * Удаление последнего элемента
+     *
+     * @return значение удаленного элемента
+     */
     public T removeLast() {
         checkListSize();
         Node<T> oldLast = last;
@@ -164,7 +225,13 @@ public class MyLinkedList<T> {
         return oldLast.value;
     }
 
-    //Удаление элемента по значению
+    /**
+     * Удаление элемента по значению
+     *
+     * @param value удаляемое значение
+     * @return true, если элемент удален;
+     * false, если элемент не удалось удалить - нет в списке
+     */
     public boolean remove(T value) {
         checkListSize();
         if (first.value.equals(value)) {
@@ -189,7 +256,13 @@ public class MyLinkedList<T> {
         return true;
     }
 
-    //Удаление элемента по индексу
+    /**
+     * Удаление элемента по индексу
+     *
+     * @param index индекс удаляемого элемента
+     * @return true, если элемент удален;
+     * false, если элемент не удалось удалить - нет в списке
+     */
     public boolean remove(int index) {
         checkListSize();
         checkElementIndex(index);
@@ -201,17 +274,14 @@ public class MyLinkedList<T> {
             removeLast();
             return true;
         }
-        Node<T> current = first;
-        while (indexOf(current.value) != index) {
-            current = current.next;
-        }
-        return remove(current.value);
+        return remove(getElementByIndex(index));
     }
 
-    //очистка листа
+    /**
+     * Удаление всех элементов списка
+     */
     public void clear() {
         checkListSize();
-
         Node<T> current = first;
 
         while (current != null) {
@@ -238,5 +308,82 @@ public class MyLinkedList<T> {
         String result = sb.toString().substring(0, sb.length() - 2);
         return result + "]";
     }
+
+    /**
+     * Проверка списка на пустоту
+     *
+     * @throws NoSuchElementException если список пустой
+     */
+    private void checkListSize() {
+        if (isEmpty()) {
+            throw new NoSuchElementException("Список пуст");
+        }
+    }
+
+    /**
+     * Проверка индекса элемента
+     *
+     * @param index проверяемый индекс
+     * @throws IndexOutOfBoundsException если индекс некорректный
+     */
+    private void checkElementIndex(int index) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Некорректный индекс");
+        }
+    }
+
+    /**
+     * Проверяет значение элемента списка
+     * элемент не может быть null
+     *
+     * @param value значение проверяемого элемента
+     */
+    private void checkElementValue(T value) {
+        if (value == null) {
+            throw new IllegalArgumentException("value не может быть null");
+        }
+    }
+
+    //пока не используется
+    private void isLinkNull() {
+        if (first == null) {
+            throw (new IllegalArgumentException("Значение first не может быть null"));
+        }
+        if (last == null || first == null) {
+            throw (new IllegalArgumentException("Значение last не может быть null"));
+        }
+    }
+
+    /**
+     * Класс элемент списка
+     *
+     * @param <T> тип элемента списка
+     *            value - значение элемента списка
+     *            next - ссылка на следующий элемент списка
+     *            previous - ссылка на предыдущий элемент списка
+     */
+    private class Node<T> {
+        private T value;
+        private Node<T> next;
+        private Node<T> previous;
+
+        public Node(T value, Node<T> next, Node<T> previous) {
+            this.value = value;
+            this.next = next;
+            this.previous = previous;
+        }
+
+        public Node(T value, Node<T> next) {
+            this(value, next, null);
+        }
+
+        public Node(Node previous, T value) {
+            this(value, null, null);
+        }
+    }
 }
+
+
+
+
 
