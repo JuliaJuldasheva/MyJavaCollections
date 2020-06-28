@@ -48,11 +48,14 @@ public class MainApp {
         myLinkedList.removeFirst();
         System.out.println(myLinkedList);//[Fourth]
         System.out.println(myLinkedList.getSize());//1
+        myLinkedList.insert(1,"Six");
+        System.out.println(myLinkedList);
+        System.out.println(myLinkedList.getElementByIndex(0));
 
-        System.out.println(myLinkedList.clone());
-        myLinkedList.clear();
-        System.out.println(myLinkedList.getSize());
-        System.out.println(myLinkedList.toString());
+//        System.out.println(myLinkedList.clone());
+//        myLinkedList.clear();
+//        System.out.println(myLinkedList.getSize());
+
 
     }
 }

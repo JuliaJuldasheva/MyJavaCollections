@@ -29,7 +29,7 @@ public class MyLinkedList<T> {
     }
 
     /**
-     * Количесвто элементов списка
+     * Количество элементов списка
      *
      * @return количесвто элементов списка
      */
@@ -107,14 +107,14 @@ public class MyLinkedList<T> {
      */
     public T getElementByIndex(int index) {
         checkListSize();
+        checkIndex(index);
         checkFirstLinkIsNull();
-        checkElementIndex(index);
 
         if (index == 0) {
-            getFirst();
+            return getFirst();
         }
         if (index == size - 1) {
-            getLast();
+            return getLast();
         }
         Node<T> current = first.next;
         for (int i = 1; i < index; i++) {
@@ -188,7 +188,7 @@ public class MyLinkedList<T> {
             insertFirst(value);
             return;
         }
-        if (index == size - 1) {
+        if (index == size) {
             insertLast(value);
             return;
         }
@@ -291,7 +291,7 @@ public class MyLinkedList<T> {
             removeFirst();
             return true;
         }
-        if (index == size - 1) {
+        if (index == size) {
             removeLast();
             return true;
         }
@@ -361,6 +361,16 @@ public class MyLinkedList<T> {
      */
     private void checkElementIndex(int index) {
         if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Некорректный индекс");
+        }
+    }
+
+    /**
+     * Проверка индекса элемента
+     * @param index проверяемый индекс
+     */
+    private void checkIndex(int index) {
+        if (index == size) {
             throw new IndexOutOfBoundsException("Некорректный индекс");
         }
     }
