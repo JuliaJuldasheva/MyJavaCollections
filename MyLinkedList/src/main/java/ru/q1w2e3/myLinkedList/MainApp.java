@@ -39,10 +39,10 @@ public class MainApp {
         myLinkedList.removeFirst();
         System.out.println(myLinkedList);//[newSecond, Second, Third, Fourth]
         System.out.println(myLinkedList.getSize());//4
-        myLinkedList.remove(1);
+        myLinkedList.removeByIndex(1);
         System.out.println(myLinkedList);//[newSecond, Third, Fourth]
         System.out.println(myLinkedList.getSize());//3
-        myLinkedList.remove("Third");
+        myLinkedList.removeByValue("Third");
         System.out.println(myLinkedList);//[newSecond, Fourth]
         System.out.println(myLinkedList.getSize());//2
         myLinkedList.removeFirst();

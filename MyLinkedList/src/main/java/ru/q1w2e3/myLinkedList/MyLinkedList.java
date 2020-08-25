@@ -19,14 +19,14 @@ public class MyLinkedList<T> {
     private Node<T> last;
 
     private int size = 0;
-
-    public void setLast(Node<T> last) {
-        this.last = last;
-    }
-
-    public void setFirst(Node<T> first) {
-        this.first = first;
-    }
+//
+//    public void setLast(Node<T> last) {
+//        this.last = last;
+//    }
+//
+//    public void setFirst(Node<T> first) {
+//        this.first = first;
+//    }
 
     /**
      * Количество элементов списка
@@ -250,7 +250,7 @@ public class MyLinkedList<T> {
      * @return true, если элемент удален;
      * false, если элемент не удалось удалить - нет в списке
      */
-    public boolean remove(T value) {
+    public boolean removeByValue(T value) {
         checkListSize();
         checkFirstLinkIsNull();
         checkLastLinkIsNull();
@@ -284,7 +284,7 @@ public class MyLinkedList<T> {
      * @return true, если элемент удален;
      * false, если элемент не удалось удалить - нет в списке
      */
-    public boolean remove(int index) {
+    public boolean removeByIndex(int index) {
         checkListSize();
         checkElementIndex(index);
         if (index == 0) {
@@ -302,7 +302,7 @@ public class MyLinkedList<T> {
             current = current.next;
             i++;
         }
-        return remove(current.value);
+        return removeByValue(current.value);
     }
 
     /**
