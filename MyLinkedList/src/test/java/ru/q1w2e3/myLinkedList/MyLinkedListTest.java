@@ -6,11 +6,10 @@ import org.junit.Test;
 
 import java.util.NoSuchElementException;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.*;
 
 public class MyLinkedListTest {
 
-    private MyLinkedList<Integer> myLinkedListEmpty = new MyLinkedList<Integer>();
     private MyLinkedList<Integer> myLinkedList;
 
     @Before
@@ -22,7 +21,7 @@ public class MyLinkedListTest {
     @Test
     public void getSizeTest() {
         int expectedSize = 0;
-        int actualSize = myLinkedListEmpty.getSize();
+        int actualSize = myLinkedList.getSize();
 
         assertEquals(expectedSize, actualSize);
     }
@@ -126,13 +125,8 @@ public class MyLinkedListTest {
         myLinkedList.insertFirst(22);
         myLinkedList.insertFirst(21);
 
-        boolean expectedValue1 = true;
-        boolean actualValue1 = myLinkedList.contains(22);
-        assertEquals(expectedValue1, actualValue1);
-
-        boolean expectedValue2 = false;
-        boolean actualValue2 = myLinkedList.contains(100);
-        assertEquals(expectedValue2, actualValue2);
+        assertTrue( myLinkedList.contains(22));
+        assertFalse(myLinkedList.contains(100));
     }
 
     @Test
@@ -142,13 +136,9 @@ public class MyLinkedListTest {
         myLinkedList.insertFirst(26);
         myLinkedList.insertFirst(25);
 
-        boolean expectedValue1 = true;
-        boolean actualValue1 = myLinkedListEmpty.isEmpty();
-        assertEquals(expectedValue1, actualValue1);
-
-        boolean expectedValue2 = false;
-        boolean actualValue2 = myLinkedList.isEmpty();
-        assertEquals(expectedValue2, actualValue2);
+        assertFalse(myLinkedList.isEmpty());
+        myLinkedList.clear();
+        assertTrue(myLinkedList.isEmpty());
     }
 
     @Test
@@ -260,10 +250,8 @@ public class MyLinkedListTest {
         myLinkedList.insertFirst(57);
         myLinkedList.insertFirst(56);
 
-        boolean expectedValue = false;
         myLinkedList.removeByValue(58);
-        boolean actualValue = myLinkedList.contains(58);
-        assertEquals(expectedValue, actualValue);
+        assertFalse(myLinkedList.contains(58));
 
         int expectedSize = 4;
         int actualSize = myLinkedList.getSize();
@@ -272,7 +260,7 @@ public class MyLinkedListTest {
 
     @Test(expected = NoSuchElementException.class)
     public void removeByValueEmptyListTest() {
-        myLinkedListEmpty.removeByValue(58);
+        myLinkedList.removeByValue(58);
     }
 
     @Test
@@ -286,14 +274,11 @@ public class MyLinkedListTest {
         int index = 2;
 
         int expectedValue1 = myLinkedList.getElementByIndex(index + 1);
-        boolean expectedValue2 = false;
-
         myLinkedList.removeByIndex(index);
-
         int actualValue1 = myLinkedList.getElementByIndex(index);
-        boolean actualValue2 = myLinkedList.contains(63);
+
         assertEquals(expectedValue1, actualValue1);
-        assertEquals(expectedValue2, actualValue2);
+        assertFalse(myLinkedList.contains(63));
 
         int expectedSize = 4;
         int actualSize = myLinkedList.getSize();
@@ -303,7 +288,7 @@ public class MyLinkedListTest {
     @Test(expected = NoSuchElementException.class)
     public void removeByIndexEmptyListTest() {
         int index = 2;
-        myLinkedListEmpty.removeByIndex(index);
+        myLinkedList.removeByIndex(index);
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
